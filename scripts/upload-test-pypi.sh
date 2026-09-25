@@ -54,6 +54,5 @@ export TWINE_PASSWORD="${TEST_PYPI_API_TOKEN}"
 
 uv tool run --from twine twine upload \
   --non-interactive \
-  --skip-existing \
   --repository-url "${repository_url}" \
   "${dist_dir}"/*
