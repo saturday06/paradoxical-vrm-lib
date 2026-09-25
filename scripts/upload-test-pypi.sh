@@ -46,7 +46,7 @@ repository_url="${TEST_PYPI_REPOSITORY_URL:-https://test.pypi.org/legacy/}"
 trap cleanup EXIT
 
 cd "${repo_root}"
-uv build --out-dir "${dist_dir}" --clear
+uv build --out-dir "${dist_dir}"
 
 shopt -s nullglob
 artifacts=("${dist_dir}"/*)
