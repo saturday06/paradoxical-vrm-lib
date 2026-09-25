@@ -39,7 +39,7 @@ mkdir -p "${tmp_root}"
 if mktemp --version >/dev/null 2>&1; then
   dist_dir="$(mktemp -d --tmpdir="${tmp_root}" paradoxical-vrm-lib-testpypi.XXXXXX)"
 else
-  dist_dir="$(TMPDIR="${tmp_root}" mktemp -d -t paradoxical-vrm-lib-testpypi.XXXXXX)"
+  dist_dir="$(TMPDIR="${tmp_root}" mktemp -d -t paradoxical-vrm-lib-testpypi)"
 fi
 repository_url="${TEST_PYPI_REPOSITORY_URL:-https://test.pypi.org/legacy/}"
 
