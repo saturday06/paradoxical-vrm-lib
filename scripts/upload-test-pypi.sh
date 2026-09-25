@@ -68,10 +68,8 @@ fi
 
 : "${TEST_PYPI_API_TOKEN:?TEST_PYPI_API_TOKEN must be set}"
 
-export TWINE_USERNAME="__token__"
-export TWINE_PASSWORD="${TEST_PYPI_API_TOKEN}"
-
-uv tool run --from twine twine upload \
+TWINE_USERNAME="__token__" TWINE_PASSWORD="${TEST_PYPI_API_TOKEN}" \
+  uv tool run --from twine twine upload \
   --non-interactive \
   --repository-url "${repository_url}" \
   "${artifacts[@]}"
