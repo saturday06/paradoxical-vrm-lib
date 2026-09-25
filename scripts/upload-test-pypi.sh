@@ -45,12 +45,18 @@ fi
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "${script_dir}/.." && pwd)"
+repo_root="$(python -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "${repo_root}")"
 tmp_root="${TMPDIR:-/tmp}"
 if [[ -n "${out_dir}" ]]; then
-  if [[ "${out_dir}" != /* ]]; then
-    dist_dir="${repo_root}/${out_dir}"
+  if [[ "${out_dir}" == /* ]]; then
+    requested_out_dir="${out_dir}"
   else
-    dist_dir="${out_dir}"
+    requested_out_dir="${repo_root}/${out_dir}"
+  fi
+  dist_dir="$(python -c 'import os, sys; print(os.path.realpath(sys.argv[1]))' "${requested_out_dir}")"
+  if [[ "${dist_dir}" != "${repo_root}/"* ]]; then
+    echo "--out-dir must point to a directory inside ${repo_root}" >&2
+    exit 1
   fi
   rm -rf "${dist_dir}"
   mkdir -p "${dist_dir}"
