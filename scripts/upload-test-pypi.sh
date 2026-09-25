@@ -45,7 +45,17 @@ fi
 
 cd "${repo_root}"
 uv build --out-dir "${dist_dir}" --clear
-for artifact in "${dist_dir}"/*; do
+
+shopt -s nullglob
+artifacts=("${dist_dir}"/*)
+shopt -u nullglob
+
+if [[ ${#artifacts[@]} -eq 0 ]]; then
+  echo "No distribution artifacts were built." >&2
+  exit 1
+fi
+
+for artifact in "${artifacts[@]}"; do
   uv tool run --from twine twine check "${artifact}"
 done
 
@@ -62,4 +72,4 @@ export TWINE_PASSWORD="${TEST_PYPI_API_TOKEN}"
 uv tool run --from twine twine upload \
   --non-interactive \
   --repository-url "${repository_url}" \
-  "${dist_dir}"/*
+  "${artifacts[@]}"
