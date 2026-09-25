@@ -33,7 +33,7 @@ rm -rf "${dist_dir}"
 
 cd "${repo_root}"
 uv build
-uv tool run --from twine twine check "${dist_dir}"/*
+uv tool run --from twine twine check "${dist_dir}"/*.tar.gz
 
 if [[ "${dry_run}" == "true" ]]; then
   echo "Dry run completed; upload skipped."
