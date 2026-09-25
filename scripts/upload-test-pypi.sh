@@ -22,9 +22,14 @@ esac
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "${script_dir}/.." && pwd)"
 tmp_root="${TMPDIR:-/tmp}"
-if ! dist_dir="$(TMPDIR="${tmp_root}" mktemp -d -t paradoxical-vrm-lib-testpypi 2>/dev/null)"; then
-  dist_dir="$(mktemp -d "${tmp_root%/}/paradoxical-vrm-lib-testpypi.XXXXXX")"
-fi
+dist_dir="$(
+  TMP_ROOT="${tmp_root}" python - <<'PY'
+import os
+import tempfile
+
+print(tempfile.mkdtemp(prefix="paradoxical-vrm-lib-testpypi.", dir=os.environ["TMP_ROOT"]))
+PY
+)"
 repository_url="${TEST_PYPI_REPOSITORY_URL:-https://test.pypi.org/legacy/}"
 
 cleanup() {
