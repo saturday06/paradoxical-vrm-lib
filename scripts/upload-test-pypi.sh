@@ -21,18 +21,22 @@ esac
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "${script_dir}/.." && pwd)"
-dist_dir="${repo_root}/dist"
+dist_dir="$(mktemp -d "${TMPDIR:-/tmp}/paradoxical-vrm-lib-testpypi.XXXXXX")"
 repository_url="${TEST_PYPI_REPOSITORY_URL:-https://test.pypi.org/legacy/}"
+
+cleanup() {
+  rm -rf "${dist_dir}"
+}
+
+trap cleanup EXIT
 
 if ! command -v uv >/dev/null 2>&1; then
   echo "uv is required to build and publish the package." >&2
   exit 1
 fi
 
-rm -rf "${dist_dir}"
-
 cd "${repo_root}"
-uv build
+uv build --out-dir "${dist_dir}" --clear
 uv tool run --from twine twine check "${dist_dir}"/*
 
 if [[ "${dry_run}" == "true" ]]; then
