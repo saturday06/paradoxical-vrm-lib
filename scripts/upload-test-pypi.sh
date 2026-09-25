@@ -45,7 +45,9 @@ fi
 
 cd "${repo_root}"
 uv build --out-dir "${dist_dir}" --clear
-uv tool run --from twine twine check "${dist_dir}"/*
+for artifact in "${dist_dir}"/*; do
+  uv tool run --from twine twine check "${artifact}"
+done
 
 if [[ "${dry_run}" == "true" ]]; then
   echo "Dry run completed; upload skipped."
