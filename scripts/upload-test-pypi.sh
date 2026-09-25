@@ -33,7 +33,7 @@ rm -rf "${dist_dir}"
 
 cd "${repo_root}"
 uv build
-uv tool run --from twine twine check "${dist_dir}"/*.tar.gz
+uv tool run --from twine twine check "${dist_dir}"/*
 
 if [[ "${dry_run}" == "true" ]]; then
   echo "Dry run completed; upload skipped."
@@ -42,10 +42,11 @@ fi
 
 : "${TEST_PYPI_API_TOKEN:?TEST_PYPI_API_TOKEN must be set}"
 
+export TWINE_USERNAME="__token__"
+export TWINE_PASSWORD="${TEST_PYPI_API_TOKEN}"
+
 uv tool run --from twine twine upload \
   --non-interactive \
   --skip-existing \
   --repository-url "${repository_url}" \
-  --username __token__ \
-  --password "${TEST_PYPI_API_TOKEN}" \
   "${dist_dir}"/*
