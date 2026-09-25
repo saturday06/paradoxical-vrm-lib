@@ -2,8 +2,9 @@
 
 ## TestPyPI publish
 
-1. Add the repository secret `TEST_PYPI_API_TOKEN`.
-2. Run the `Publish to TestPyPI` workflow from the Actions tab.
+1. Create a protected `testpypi` environment in GitHub.
+2. Add the `TEST_PYPI_API_TOKEN` secret to that environment.
+3. Run the `Publish to TestPyPI` workflow from the Actions tab.
 
 You can also validate the build locally without uploading:
 
