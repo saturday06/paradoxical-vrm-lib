@@ -19,11 +19,29 @@ case "${1:-}" in
     ;;
 esac
 
+cleanup() {
+  rm -rf "${dist_dir}"
+}
+
+if ! command -v uv >/dev/null 2>&1; then
+  echo "uv is required to build and publish the package." >&2
+  exit 1
+fi
+
+if command -v python >/dev/null 2>&1; then
+  python_cmd="python"
+elif command -v python3 >/dev/null 2>&1; then
+  python_cmd="python3"
+else
+  echo "python or python3 is required to build and publish the package." >&2
+  exit 1
+fi
+
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "${script_dir}/.." && pwd)"
 tmp_root="${TMPDIR:-/tmp}"
 dist_dir="$(
-  TMP_ROOT="${tmp_root}" python - <<'PY'
+  TMP_ROOT="${tmp_root}" "${python_cmd}" - <<'PY'
 import os
 import tempfile
 
@@ -32,16 +50,7 @@ PY
 )"
 repository_url="${TEST_PYPI_REPOSITORY_URL:-https://test.pypi.org/legacy/}"
 
-cleanup() {
-  rm -rf "${dist_dir}"
-}
-
 trap cleanup EXIT
-
-if ! command -v uv >/dev/null 2>&1; then
-  echo "uv is required to build and publish the package." >&2
-  exit 1
-fi
 
 cd "${repo_root}"
 uv build --out-dir "${dist_dir}" --clear
