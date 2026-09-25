@@ -36,9 +36,10 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "${script_dir}/.." && pwd)"
 tmp_root="${TMPDIR:-/tmp}"
 mkdir -p "${tmp_root}"
-if ! dist_dir="$(mktemp -d "${tmp_root%/}/paradoxical-vrm-lib-testpypi.XXXXXX" 2>/dev/null)"; then
-  echo "Failed to create a temporary build directory under ${tmp_root}." >&2
-  exit 1
+if mktemp --version >/dev/null 2>&1; then
+  dist_dir="$(mktemp -d --tmpdir="${tmp_root}" paradoxical-vrm-lib-testpypi.XXXXXX)"
+else
+  dist_dir="$(TMPDIR="${tmp_root}" mktemp -d -t paradoxical-vrm-lib-testpypi.XXXXXX)"
 fi
 repository_url="${TEST_PYPI_REPOSITORY_URL:-https://test.pypi.org/legacy/}"
 
